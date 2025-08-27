@@ -17,6 +17,8 @@ jobs:
 
       - run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o kubeselect .
       - run: tar czf kubeselect_linux_amd64.tar.gz kubeselect LICENSE README.md
+      - run: CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o kubeselect .
+      - run: tar czf kubeselect_linux_arm64.tar.gz kubeselect LICENSE README.md
       - run: CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o kubeselect .
       - run: tar czf kubeselect_darwin_amd64.tar.gz kubeselect LICENSE README.md
       - run: CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" -o kubeselect.exe .
@@ -39,6 +41,16 @@ jobs:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: kubeselect_linux_amd64.tar.gz
           asset_name: kubeselect_linux_amd64-${{ steps.get_tag_name.outputs.VERSION }}.tar.gz
+          asset_content_type: application/gzip
+
+      - name: Upload Linux ARM64 asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: kubeselect_linux_arm64.tar.gz
+          asset_name: kubeselect_linux_arm64-${{ steps.get_tag_name.outputs.VERSION }}.tar.gz
           asset_content_type: application/gzip
 
       - name: Upload Darwin asset
